@@ -1,0 +1,6 @@
+name: Check current cron status
+description: "Check current cron status in drupal 10."
+type: module
+package: Custom
+core: 10.x
+core_version_requirement: 10.x
