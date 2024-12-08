@@ -2,6 +2,6 @@ cron_status.check_cron_status:
   path: "/check-cron-status"
   defaults:
     _controller: '\Drupal\cron_status\Controller\CronStatusController::status'
-    _title: "TTN Hello, World!"
+    _title: "Check current cron status"
   requirements:
     _permission: "access content"
