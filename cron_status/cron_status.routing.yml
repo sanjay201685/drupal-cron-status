@@ -2,6 +2,14 @@ cron_status.check_cron_status:
   path: "/check-cron-status"
   defaults:
     _controller: '\Drupal\cron_status\Controller\CronStatusController::status'
-    _title: "Check current cron status"
+    _title: "Cron Status"
+  requirements:
+    _permission: "access content"
+
+cron_status.acquirelock:
+  path: "/AcquireLockController"
+  defaults:
+    _controller: '\Drupal\cron_status\Controller\AcquireLockController::lock'
+    _title: "Acquire Lock"
   requirements:
     _permission: "access content"

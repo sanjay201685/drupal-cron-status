@@ -5,7 +5,7 @@ namespace Drupal\cron_status\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Lock\LockBackendInterface;
 
-class CronStatusController extends ControllerBase {
+class AcquireLockController extends ControllerBase {
 
   /**
    * The lock backend service.
@@ -13,6 +13,8 @@ class CronStatusController extends ControllerBase {
    * @var \Drupal\Core\Lock\LockBackendInterface
    */
   protected $lock;
+
+  protected $lockName;
 
   /**
    * Constructs a CronStatusController object.
@@ -44,13 +46,30 @@ class CronStatusController extends ControllerBase {
   /**
    * Returns the page content.
    */
-  public function status() {
+  public function lock() {
     // Check if cron is locked.
-    $isCronRunning = $this->lock->lockMayBeAvailable('cron') ? 'Yes' : 'No';
+    $lock_name = "cron";
+
+    // Try to acquire the lock.
+    if ($this->lock->acquire($lock_name, 30)) {
+      try {
+        // Perform the critical operation here.
+        \Drupal::logger('Acquire Lock')->info('Lock acquired, processing...');
+        sleep(5); // Simulate a time-consuming operation.
+      }
+      finally {
+        // Release the lock after the operation is complete.
+        $this->lock->release($lock_name);
+        \Drupal::logger('Acquire Lock')->info('Lock released.');
+      }
+    }
+    else {
+      \Drupal::logger('Acquire Lock')->warning('Could not acquire the lock.');
+    }
 
     // Return the output.
     return [
-      '#markup' => $this->t('Lock available ? @status', ['@status' => $isCronRunning]),
+      '#markup' => $this->t('Drupal lock mechanisms running'),
     ];
   }
 
